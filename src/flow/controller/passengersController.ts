@@ -6,6 +6,7 @@ import { InjectionManager } from "../../core/injection/injectionManager";
 import { FloorConfig } from "../../model/config/floorConfig";
 import { PassengersData } from "../../model/passengers";
 import { BaseEvents } from "../../core/type/baseEvent";
+import { SpawnData } from "../data/spawnData";
 
 export class PassengersController extends Controller {
   protected _passengersData: PassengersData =
@@ -14,7 +15,7 @@ export class PassengersController extends Controller {
   protected _readyToExecute = false;
 
   protected _spawnCall?: ReturnType<typeof gsap.delayedCall>;
-  protected _spawnInterval: number = 4;
+  protected _spawnInterval: number = 0.5;
 
   protected initHandlers(): void {
     this.addHandler(BaseEvents.floorsChanged, this.onDataChanged, this);
@@ -76,7 +77,7 @@ export class PassengersController extends Controller {
     };
 
     randomFloor.queue.push(passenger);
-    this.emit(BaseEvents.passengerSpawned);
+    this.emit(BaseEvents.passengerSpawned, new SpawnData(passenger));
     this._spawnCall = gsap.delayedCall(
       this._spawnInterval,
       this.spawnPassenger.bind(this)

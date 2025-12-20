@@ -63,7 +63,7 @@ export class FloorsSelector extends ComponentLike(Container) {
   }
 
   private onLeftClick(_e: FederatedPointerEvent) {
-    if (this.value > this._floorConfig.minFloors && this.locked) {
+    if (this.value > this._floorConfig.minFloors && !this.locked) {
       this.value--;
       this.emit(ComponentEvents.floorsChanged);
       this.locked = true;

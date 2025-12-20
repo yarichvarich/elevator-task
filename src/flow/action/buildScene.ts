@@ -3,7 +3,7 @@ import { InjectionManager } from "../../core/injection/injectionManager";
 import { ElevatorMediator } from "../component/elevator/mediator/elevatorMediator";
 import { Elevator } from "../component/elevator/view/elevator";
 import { FloorsMediator } from "../component/floors/mediator/FloorsMediator";
-import { Floors } from "../component/floors/view/Floors";
+import { Floors } from "../component/floors/view/floor";
 import { SceneContainerMediator } from "../component/sceneContainer/mediator/sceneContainerMediator";
 
 export class BuildScene extends Action {

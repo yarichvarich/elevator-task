@@ -4,6 +4,8 @@ import { ComponentLike } from "../../../../core/mixin/componentLike";
 import { InjectionManager } from "../../../../core/injection/injectionManager";
 import { FloorConfig } from "../../../../model/config/floorConfig";
 import { ElevatorConfig } from "../../../../model/config/elevatorConfig";
+import type { SpawnData } from "../../../data/spawnData";
+import { PassengerWidget } from "./passenger";
 
 export class Floors extends ComponentLike(Container) {
   protected _floorsConfig: FloorConfig = InjectionManager.inject(FloorConfig);
@@ -11,6 +13,7 @@ export class Floors extends ComponentLike(Container) {
     InjectionManager.inject(ElevatorConfig);
 
   private graphics: Graphics;
+  protected _passengerList: PassengerWidget[] = [];
 
   constructor() {
     super();
@@ -20,7 +23,10 @@ export class Floors extends ComponentLike(Container) {
 
     this.drawFloors();
 
-    this.position.set(45, this._elevatorConfig.elevatorHeight);
+    this.position.set(
+      this._elevatorConfig.elevatorWidth + 5,
+      this._elevatorConfig.elevatorHeight
+    );
   }
 
   private drawFloors(): void {
@@ -40,6 +46,13 @@ export class Floors extends ComponentLike(Container) {
       width: 2,
       color: 0x000000,
     });
+  }
+
+  public addPassenger(data: SpawnData): void {
+    const passengerWidget = new PassengerWidget(data);
+
+    this._passengerList.push(passengerWidget);
+    this.addChild(passengerWidget);
   }
 
   protected onResize(width: number, height: number): void {

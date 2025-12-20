@@ -7,6 +7,7 @@ import { ApplicationData } from "../model/applicationData";
 import { ElevatorConfig } from "../model/config/elevatorConfig";
 import { FloorConfig } from "../model/config/floorConfig";
 import { Flow } from "../flow/flow";
+import { PassengerConfig } from "../model/config/passengerConfig";
 
 export class Boot extends Controller {
   public start() {
@@ -18,6 +19,7 @@ export class Boot extends Controller {
     //data
     InjectionManager.bind(ElevatorConfig);
     InjectionManager.bind(FloorConfig);
+    InjectionManager.bind(PassengerConfig);
     InjectionManager.bind(ApplicationData);
     //actions
     InjectionManager.bind(InitApplication);
