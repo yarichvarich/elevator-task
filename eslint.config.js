@@ -1,38 +1,39 @@
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import importPlugin from 'eslint-plugin-import';
-import prettierPlugin from 'eslint-plugin-prettier';
+import js from "@eslint/js";
+import tseslint from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
+import prettierPlugin from "eslint-plugin-prettier";
 
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
   {
-    files: ['**/*.ts'],
+    files: ["**/*.ts"],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+      ecmaVersion: "latest",
+      sourceType: "module",
     },
     plugins: {
       import: importPlugin,
       prettier: prettierPlugin,
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
       ],
-      '@typescript-eslint/explicit-function-return-type': 'off',
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
 
-      'import/order': [
-        'warn',
+      "import/order": [
+        "warn",
         {
-          groups: ['builtin', 'external', 'internal'],
-          'newlines-between': 'always',
+          groups: ["builtin", "external", "internal"],
+          "newlines-between": "always",
         },
       ],
 
-      'prettier/prettier': 'warn',
+      "prettier/prettier": "warn",
     },
   },
 ];

@@ -1,3 +1,54 @@
+html,
 body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+}
+
+#app-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#boot-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#boot-overlay {
+  transition: opacity 0.5s ease;
+}
+
+#boot-overlay.hidden {
+  opacity: 0;
+}
+
+.spinner {
+  border-radius: 50%;
+  border-color: transparent !important;
+  border-right-color: rgb(43, 52, 61) !important;
+  animation: spinner-rotation-keyframes 1s infinite linear;
+
+  width: 56px;
+  height: 56px;
+  border: 9px solid;
+}
+
+@keyframes spinner-rotation-keyframes {
+  to {
+    transform: rotate(1turn);
+  }
 }
