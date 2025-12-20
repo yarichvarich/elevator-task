@@ -1,3 +1,4 @@
+import { EventBus } from "../eventBus/eventBus";
 import { ActionStates, type ActionState } from "../type/actionState";
 import type { Callback } from "../type/callback";
 
@@ -68,6 +69,10 @@ export abstract class Action {
   public removeAllOnFailure(): Action {
     this._onFailure = [];
     return this;
+  }
+
+  protected emit(message: string, data?: any) {
+    EventBus.emit(message, data);
   }
 
   protected abstract onExecute(...args: any[]): void;

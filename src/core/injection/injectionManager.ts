@@ -14,12 +14,16 @@ export class InjectionManager {
     return InjectionManager.#instance;
   }
 
-  public static bind(c: Constructor<any>): void {
+  public static bind(c: Constructor<any>): any {
     const mappingQuery = InjectionManager.instance._mappings.get(c);
 
     if (!mappingQuery) {
-      InjectionManager.instance._mappings.set(c, new c());
+      const injection = new c();
+      InjectionManager.instance._mappings.set(c, injection);
+      return injection;
     }
+
+    return mappingQuery;
   }
 
   public static inject(c: Constructor<any>): any {

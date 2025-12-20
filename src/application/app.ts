@@ -5,7 +5,7 @@ import {
   type Renderer,
 } from "pixi.js";
 
-import type { Callback } from "../../core/type/callback";
+import type { Callback } from "../core/type/callback";
 
 export class App {
   private _pixiApp: Application = new Application();
@@ -28,7 +28,10 @@ export class App {
     App.instance._pixiApp
       .init(options)
       .catch(onFailure.bind(this))
-      .then(onSuccess.bind(this));
+      .then(() => {
+        (globalThis as any).__PIXI_APP__ = App.instance._pixiApp;
+        onSuccess();
+      });
   }
 
   public static get stage(): Container {

@@ -1,18 +1,20 @@
 import { GroupAction } from "../core/action/groupAction";
+import { Controller } from "../core/controller/controller";
 import { InjectionManager } from "../core/injection/injectionManager";
 import { HideOverlay } from "./action/hideOverlay";
 import { InitApplication } from "./action/initApplication";
-import { ApplicationData } from "./model/applicationData";
-import { ElevatorConfig } from "./model/config/elevatorConfig";
-import { FloorConfig } from "./model/config/floorConfig";
+import { ApplicationData } from "../model/applicationData";
+import { ElevatorConfig } from "../model/config/elevatorConfig";
+import { FloorConfig } from "../model/config/floorConfig";
+import { Flow } from "../flow/flow";
 
-export class Boot {
+export class Boot extends Controller {
   public start() {
-    this.initInjections();
+    this.init();
     this.executeBootSequence();
   }
 
-  private initInjections() {
+  protected initInjections() {
     //data
     InjectionManager.bind(ElevatorConfig);
     InjectionManager.bind(FloorConfig);
@@ -20,6 +22,8 @@ export class Boot {
     //actions
     InjectionManager.bind(InitApplication);
     InjectionManager.bind(HideOverlay);
+    //controllers
+    InjectionManager.bind(Flow).init();
   }
 
   private onSuccess(): void {

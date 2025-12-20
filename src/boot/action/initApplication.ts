@@ -1,9 +1,8 @@
 import { Action } from "../../core/action/action";
-import { EventBus } from "../../core/eventBus/eventBus";
 import { InjectionManager } from "../../core/injection/injectionManager";
 import { CoreEvents } from "../../core/type/coreEvent";
-import { App } from "../application/app";
-import { ApplicationData } from "../model/applicationData";
+import { App } from "../../application/app";
+import { ApplicationData } from "../../model/applicationData";
 
 export class InitApplication extends Action {
   protected _appConfig: ApplicationData =
@@ -31,7 +30,7 @@ export class InitApplication extends Action {
   }
 
   protected onApplicationInited(): void {
-    EventBus.emit(CoreEvents.applicationInited);
+    this.emit(CoreEvents.applicationInited);
     this.resolve();
   }
 
