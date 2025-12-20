@@ -8,19 +8,26 @@ import { SceneContainerMediator } from "../component/sceneContainer/mediator/sce
 
 export class BuildScene extends Action {
   protected removePreviousBuild(): void {
-    const sceneContainerMediator: SceneContainerMediator =
-      InjectionManager.inject(SceneContainerMediator);
-
-    const elevatorMediator: ElevatorMediator =
-      InjectionManager.inject(ElevatorMediator);
-
-    const floorsMediator: FloorsMediator =
-      InjectionManager.inject(FloorsMediator);
-
-    sceneContainerMediator.view.content.removeChild(
-      elevatorMediator.view,
-      floorsMediator.view
+    const sceneContainerMediator = InjectionManager.inject(
+      SceneContainerMediator
     );
+
+    const elevatorMediator = InjectionManager.inject(ElevatorMediator);
+
+    const floorsMediator = InjectionManager.inject(FloorsMediator);
+
+    const oldElevator = elevatorMediator.view;
+    const oldFloors = floorsMediator.view;
+
+    if (oldElevator) {
+      sceneContainerMediator.view.content.removeChild(oldElevator);
+      oldElevator.destroy({ children: true });
+    }
+
+    if (oldFloors) {
+      sceneContainerMediator.view.content.removeChild(oldFloors);
+      oldFloors.destroy({ children: true });
+    }
   }
 
   protected onExecute(): void {

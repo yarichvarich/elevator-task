@@ -8,44 +8,42 @@ export function ComponentLike<TBase extends Constructor<Container>>(
   Base: TBase
 ) {
   return class extends Base {
+    protected _sceneWidth = 0;
+    protected _sceneHeight = 0;
+
     constructor(...args: any[]) {
       super(...args);
 
       this.on("added", this._handleAdded);
-      this.on("removed", this._handleRemoved);
-
-      this._sceneWidth = App.renderer.width;
-      this._sceneHeight = App.renderer.height;
+      this.on("removedfromstage", this._handleRemovedFromStage);
+      this.on("destroyed", this._handleDestroyed);
     }
-
-    protected _sceneWidth;
-    protected _sceneHeight;
 
     private _handleAdded = () => {
       this._sceneWidth = App.renderer.width;
       this._sceneHeight = App.renderer.height;
-
-      this.onAddedToStage(App.renderer.width, App.renderer.height);
-
+      this.onAddedToStage(this._sceneWidth, this._sceneHeight);
       App.renderer.on("resize", this._handleResize);
     };
 
-    private _handleRemoved = () => {
+    private _handleRemovedFromStage = () => {
       App.renderer.off("resize", this._handleResize);
-
       this.onRemovedFromStage();
     };
 
-    private _handleResize = (width: number, height: number) => {
-      this._sceneWidth = width;
-      this._sceneHeight = height;
-      this.onResize(width, height);
+    private _handleDestroyed = () => {
+      App.renderer.off("resize", this._handleResize);
+      this.onRemovedFromStage();
     };
 
-    protected onAddedToStage(width: number, height: number): void {}
+    private _handleResize = (w: number, h: number) => {
+      this._sceneWidth = w;
+      this._sceneHeight = h;
+      this.onResize(w, h);
+    };
 
+    protected onAddedToStage(_: number, __: number): void {}
     protected onRemovedFromStage(): void {}
-
-    protected onResize(width: number, height: number): void {}
+    protected onResize(_: number, __: number): void {}
   };
 }

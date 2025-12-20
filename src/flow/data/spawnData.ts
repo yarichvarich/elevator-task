@@ -4,10 +4,16 @@ import type { Passenger } from "../../core/type/floorQueue";
 
 export class SpawnData extends BaseEffectData {
   public passenger: Passenger;
+  public queuePosition: number;
 
-  constructor(passenger: Passenger, callback?: Callback<void>) {
+  constructor(
+    passenger: Passenger,
+    queuePosition: number,
+    callback?: Callback<void>
+  ) {
     super(callback);
 
     this.passenger = passenger;
+    this.queuePosition = queuePosition;
   }
 }

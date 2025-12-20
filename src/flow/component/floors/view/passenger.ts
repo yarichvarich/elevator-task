@@ -57,35 +57,37 @@ export class PassengerWidget extends ComponentLike(Container) {
     );
     this.addChild(this.textLabel);
 
-    this.setupAnimation();
+    this.setupInitialAnimation();
+  }
+
+  protected onRemovedFromStage() {
+    gsap.killTweensOf(this);
   }
 
   protected getTargetPositionX() {
-    const queues = this._passengersData.floorQueues;
-
-    let index = 0;
-
-    for (const q of queues) {
-      index = q.queue.findIndex((p) => p.id === this._data.passenger.id);
-      if (index !== -1) {
-        break;
-      }
-    }
-
     return (
-      index *
+      this._data.queuePosition *
         (this._passengerConfig.passengerWidth +
           this._passengerConfig.personalSpace) +
       this._passengerConfig.passengerWidth
     );
   }
 
-  public setupAnimation(): void {
+  public setupInitialAnimation(): void {
     const targetPosition = this.getTargetPositionX();
     const duration =
       Math.abs(targetPosition - this.x) / this._passengerConfig.passengerSpeed;
 
-    gsap.to(this, { x: targetPosition, duration });
+    gsap.to(this, {
+      x: targetPosition,
+      duration,
+      onComplete: () => {
+        if (this._data.queuePosition === 0) {
+          this._passengersData.floorQueues[this._data.passenger.from].isReady =
+            true;
+        }
+      },
+    });
   }
 
   private draw(): void {

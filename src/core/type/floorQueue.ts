@@ -6,5 +6,6 @@ export type Passenger = {
 
 export type FloorQeueue = {
   id: number;
+  isReady: boolean;
   queue: Passenger[];
 };

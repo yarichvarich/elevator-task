@@ -77,7 +77,10 @@ export class PassengersController extends Controller {
     };
 
     randomFloor.queue.push(passenger);
-    this.emit(BaseEvents.passengerSpawned, new SpawnData(passenger));
+    this.emit(
+      BaseEvents.passengerSpawned,
+      new SpawnData(passenger, randomFloor.queue.length - 1)
+    );
     this._spawnCall = gsap.delayedCall(
       this._spawnInterval,
       this.spawnPassenger.bind(this)

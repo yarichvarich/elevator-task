@@ -20,7 +20,7 @@ export class ResetData extends Action {
     const currentQueuesCount = this._floorConfig.floors;
 
     for (let i = 0; i < currentQueuesCount; i++) {
-      const newQueue = { id: i, queue: [] } as FloorQeueue;
+      const newQueue = { id: i, queue: [], isReady: false } as FloorQeueue;
       this._passengersData.floorQueues.push(newQueue);
     }
   }
