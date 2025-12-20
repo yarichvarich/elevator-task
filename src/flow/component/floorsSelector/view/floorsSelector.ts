@@ -4,12 +4,12 @@ import {
   Text,
   TextStyle,
   FederatedPointerEvent,
-  type Renderer,
 } from "pixi.js";
 
 import { FloorConfig } from "../../../../model/config/floorConfig";
 import { InjectionManager } from "../../../../core/injection/injectionManager";
 import { ComponentLike } from "../../../../core/mixin/componentLike";
+import { ComponentEvents } from "../../../../core/type/componentEvent";
 
 export class FloorsSelector extends ComponentLike(Container) {
   protected _floorConfig: FloorConfig = InjectionManager.inject(FloorConfig);
@@ -17,6 +17,8 @@ export class FloorsSelector extends ComponentLike(Container) {
   public leftButton: Graphics;
   public rightButton: Graphics;
   public labelText: Text;
+
+  public locked: boolean = false;
 
   constructor() {
     super();
@@ -61,11 +63,19 @@ export class FloorsSelector extends ComponentLike(Container) {
   }
 
   private onLeftClick(_e: FederatedPointerEvent) {
-    if (this.value > this._floorConfig.minFloors) this.value--;
+    if (this.value > this._floorConfig.minFloors && this.locked) {
+      this.value--;
+      this.emit(ComponentEvents.floorsChanged);
+      this.locked = true;
+    }
   }
 
   private onRightClick(_e: FederatedPointerEvent) {
-    if (this.value < this._floorConfig.maxFloors) this.value++;
+    if (this.value < this._floorConfig.maxFloors && !this.locked) {
+      this.value++;
+      this.emit(ComponentEvents.floorsChanged);
+      this.locked = true;
+    }
   }
 
   public get value() {

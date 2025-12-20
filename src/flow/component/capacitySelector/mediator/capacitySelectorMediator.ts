@@ -1,11 +1,22 @@
 import { Mediator } from "../../../../core/mediator/mediator";
 import { BaseEvents } from "../../../../core/type/baseEvent";
+import { ComponentEvents } from "../../../../core/type/componentEvent";
 import type { CapacitySelector } from "../view/capacitySelector";
 
 export class CapacitySelectorMediator extends Mediator<CapacitySelector> {
-  protected initHandlers(): void {
-    this.addHandler(BaseEvents.floorsChanged, this.onEvent, this);
+  protected initComponentHanlders(): void {
+    this.view.on(ComponentEvents.capacityChanged, this.onCapacityChanged, this);
   }
 
-  protected onEvent() {}
+  protected initHandlers(): void {
+    this.addHandler(BaseEvents.dataReady, this.onDataReady, this);
+  }
+
+  protected onDataReady(): void {
+    this.view.locked = false;
+  }
+
+  protected onCapacityChanged(): void {
+    this.emit(BaseEvents.capacityChanged);
+  }
 }

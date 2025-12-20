@@ -13,9 +13,18 @@ export function ComponentLike<TBase extends Constructor<Container>>(
 
       this.on("added", this._handleAdded);
       this.on("removed", this._handleRemoved);
+
+      this._sceneWidth = App.renderer.width;
+      this._sceneHeight = App.renderer.height;
     }
 
+    protected _sceneWidth;
+    protected _sceneHeight;
+
     private _handleAdded = () => {
+      this._sceneWidth = App.renderer.width;
+      this._sceneHeight = App.renderer.height;
+
       this.onAddedToStage(App.renderer.width, App.renderer.height);
 
       App.renderer.on("resize", this._handleResize);
@@ -28,6 +37,8 @@ export function ComponentLike<TBase extends Constructor<Container>>(
     };
 
     private _handleResize = (width: number, height: number) => {
+      this._sceneWidth = width;
+      this._sceneHeight = height;
       this.onResize(width, height);
     };
 

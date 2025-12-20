@@ -3,4 +3,7 @@ export class ElevatorConfig {
   public minCapacity: number = 2;
 
   public capacity: number = 4;
+
+  public elevatorWidth: number = 40;
+  public elevatorHeight: number = 60;
 }

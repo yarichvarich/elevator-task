@@ -17,7 +17,7 @@ export abstract class Controller {
     EventBus.addHandler(message, scopedHandler);
   }
 
-  protected emit(message: string, data: any): void {
+  protected emit(message: string, data?: any): void {
     EventBus.emit(message, data);
   }
 

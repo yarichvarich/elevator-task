@@ -1,10 +1,12 @@
 import { Container, Graphics } from "pixi.js";
 
 import { ComponentLike } from "../../../../core/mixin/componentLike";
+import { ElevatorConfig } from "../../../../model/config/elevatorConfig";
+import { InjectionManager } from "../../../../core/injection/injectionManager";
 
 export class Elevator extends ComponentLike(Container) {
-  public static elevatorWidth: number = 40;
-  public static elevatorHeight: number = 60;
+  protected _elevatorConfig: ElevatorConfig =
+    InjectionManager.inject(ElevatorConfig);
 
   public graphics: Graphics;
 
@@ -21,11 +23,14 @@ export class Elevator extends ComponentLike(Container) {
     this.graphics
       .clear()
       .moveTo(0, 0)
-      .lineTo(Elevator.elevatorWidth, 0)
+      .lineTo(this._elevatorConfig.elevatorWidth, 0)
       .moveTo(0, 0)
-      .lineTo(0, Elevator.elevatorHeight)
-      .moveTo(0, Elevator.elevatorHeight)
-      .lineTo(Elevator.elevatorWidth, Elevator.elevatorHeight)
+      .lineTo(0, this._elevatorConfig.elevatorHeight)
+      .moveTo(0, this._elevatorConfig.elevatorHeight)
+      .lineTo(
+        this._elevatorConfig.elevatorWidth,
+        this._elevatorConfig.elevatorHeight
+      )
       .stroke({
         width: 4,
         color: 0x000000,

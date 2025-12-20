@@ -1,3 +1,5 @@
+import gsap from "gsap";
+
 import { EventBus } from "../eventBus/eventBus";
 import { ActionStates, type ActionState } from "../type/actionState";
 import type { Callback } from "../type/callback";
@@ -10,15 +12,17 @@ export abstract class Action {
   public start(...args: any[]): void {
     this._state = ActionStates.started;
 
-    try {
-      this.onExecute(args);
-    } catch (error) {
-      this._state = ActionStates.failed;
+    gsap.delayedCall(0, () => {
+      try {
+        this.onExecute(args);
+      } catch (error) {
+        this._state = ActionStates.failed;
 
-      this.invokeOnFailure(error as Error);
+        this.invokeOnFailure(error as Error);
 
-      throw error;
-    }
+        throw error;
+      }
+    });
   }
 
   public resolve() {
@@ -33,12 +37,16 @@ export abstract class Action {
     this._onSuccess.forEach((cb) => {
       cb();
     });
+
+    this._onSuccess = [];
   }
 
   protected invokeOnFailure(...args: any[]): void {
     this._onFailure.forEach((cb) => {
       cb(args);
     });
+
+    this._onFailure = [];
   }
 
   public onSuccess(cb: Callback<void>): Action {

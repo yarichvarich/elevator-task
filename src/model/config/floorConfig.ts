@@ -3,4 +3,8 @@ export class FloorConfig {
   public maxFloors: number = 8;
 
   public floors: number = 4;
+  public floorHeight: number = 60;
+  public floorWidth: number = 600;
+
+  public maxFloorCapacity: number = 5;
 }

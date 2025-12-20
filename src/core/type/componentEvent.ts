@@ -1,6 +1,7 @@
 export const ComponentEvents = {
   elevatorCapacityChanged: "component.elevatorCapacityChanged",
   floorsChanged: "component.floorsChanged",
+  capacityChanged: "component.capacityChanged",
 };
 
 export type ComponentEvent =

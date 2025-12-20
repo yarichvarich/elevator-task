@@ -9,6 +9,7 @@ import {
 import { InjectionManager } from "../../../../core/injection/injectionManager";
 import { ElevatorConfig } from "../../../../model/config/elevatorConfig";
 import { ComponentLike } from "../../../../core/mixin/componentLike";
+import { ComponentEvents } from "../../../../core/type/componentEvent";
 
 export class CapacitySelector extends ComponentLike(Container) {
   protected _capacityConfig: ElevatorConfig =
@@ -17,6 +18,8 @@ export class CapacitySelector extends ComponentLike(Container) {
   public leftButton: Graphics;
   public rightButton: Graphics;
   public labelText: Text;
+
+  public locked: boolean = false;
 
   constructor() {
     super();
@@ -61,11 +64,19 @@ export class CapacitySelector extends ComponentLike(Container) {
   }
 
   private onLeftClick(_e: FederatedPointerEvent) {
-    if (this.value > this._capacityConfig.minCapacity) this.value--;
+    if (this.value > this._capacityConfig.minCapacity && !this.locked) {
+      this.value--;
+      this.emit(ComponentEvents.capacityChanged);
+      this.locked = true;
+    }
   }
 
   private onRightClick(_e: FederatedPointerEvent) {
-    if (this.value < this._capacityConfig.maxCapacity) this.value++;
+    if (this.value < this._capacityConfig.maxCapacity && !this.locked) {
+      this.value++;
+      this.emit(ComponentEvents.capacityChanged);
+      this.locked = true;
+    }
   }
 
   public get value() {
