@@ -4,10 +4,6 @@ import { BaseEvents } from "../../../../core/type/baseEvent";
 import { SceneContainer } from "../view/sceneContainer";
 
 export class SceneContainerMediator extends Mediator<SceneContainer> {
-  protected createComponents(): void {
-    this.view = new SceneContainer();
-  }
-
   protected initHandlers(): void {
     this.addHandler(BaseEvents.floorsChanged, this.onFloorsChanged, this);
   }

@@ -5,17 +5,15 @@ import type { TransitionEffectData } from "../../../../core/data/transitionEffec
 import { snapshotContainer } from "../../../../core/utils/snapshootTool";
 import { App } from "../../../../application/app";
 import { ComponentLike } from "../../../../core/mixin/componentLike";
-import { FloorsSelector } from "../../floorsSelector/view/floorsSelector";
 
 export class SceneContainer extends ComponentLike(Container) {
   public snapshot: Sprite = new Sprite();
 
-  public floorsSelector: FloorsSelector = new FloorsSelector();
-
   protected onAddedToStage(): void {
     this.addChild(this.snapshot);
-    this.addChild(this.floorsSelector);
   }
+
+  protected onResize(_width: number, _height: number): void {}
 
   public onFloorsChanged(data: TransitionEffectData): void {
     this.snapshot = snapshotContainer(this, this.snapshot, App.renderer);

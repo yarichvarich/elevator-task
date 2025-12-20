@@ -4,12 +4,14 @@ import {
   Text,
   TextStyle,
   FederatedPointerEvent,
+  type Renderer,
 } from "pixi.js";
 
 import { FloorConfig } from "../../../../model/config/floorConfig";
 import { InjectionManager } from "../../../../core/injection/injectionManager";
+import { ComponentLike } from "../../../../core/mixin/componentLike";
 
-export class FloorsSelector extends Container {
+export class FloorsSelector extends ComponentLike(Container) {
   protected _floorConfig: FloorConfig = InjectionManager.inject(FloorConfig);
 
   public leftButton: Graphics;
@@ -59,7 +61,6 @@ export class FloorsSelector extends Container {
   }
 
   private onLeftClick(_e: FederatedPointerEvent) {
-    console.log("dsadas");
     if (this.value > this._floorConfig.minFloors) this.value--;
   }
 
@@ -75,5 +76,13 @@ export class FloorsSelector extends Container {
     if (v > this._floorConfig.maxFloors) v = this._floorConfig.maxFloors;
     this._floorConfig.floors = v;
     this.labelText.text = this._floorConfig.floors.toString();
+  }
+
+  protected onResize(width: number, height: number): void {
+    this.position.set(width / 3, (height * 9) / 10);
+  }
+
+  protected onAddedToStage(width: number, height: number): void {
+    this.position.set(width / 3, (height * 9) / 10);
   }
 }

@@ -8,8 +8,9 @@ import {
 
 import { InjectionManager } from "../../../../core/injection/injectionManager";
 import { ElevatorConfig } from "../../../../model/config/elevatorConfig";
+import { ComponentLike } from "../../../../core/mixin/componentLike";
 
-export class CapacitySelector extends Container {
+export class CapacitySelector extends ComponentLike(Container) {
   protected _capacityConfig: ElevatorConfig =
     InjectionManager.inject(ElevatorConfig);
 
@@ -60,7 +61,6 @@ export class CapacitySelector extends Container {
   }
 
   private onLeftClick(_e: FederatedPointerEvent) {
-    console.log("dsadas");
     if (this.value > this._capacityConfig.minCapacity) this.value--;
   }
 
@@ -78,5 +78,13 @@ export class CapacitySelector extends Container {
       v = this._capacityConfig.maxCapacity;
     this._capacityConfig.capacity = v;
     this.labelText.text = this._capacityConfig.capacity.toString();
+  }
+
+  protected onResize(width: number, height: number): void {
+    this.position.set((width * 2) / 3, (height * 9) / 10);
+  }
+
+  protected onAddedToStage(width: number, height: number): void {
+    this.position.set((width * 2) / 3, (height * 9) / 10);
   }
 }

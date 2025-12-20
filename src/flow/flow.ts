@@ -1,9 +1,10 @@
 import { Controller } from "../core/controller/controller";
-import { TransitionEffectData } from "../core/data/transitionEffectData";
 import { InjectionManager } from "../core/injection/injectionManager";
-import { BaseEvents } from "../core/type/baseEvent";
 import { CoreEvents } from "../core/type/coreEvent";
 import { BuildLayout } from "./action/buildLayout";
+import { CapacitySelectorMediator } from "./component/capacitySelector/mediator/capacitySelectorMediator";
+import { ElevatorMediator } from "./component/elevator/mediator/elevatorMediator";
+import { FloorsSelectorMediator } from "./component/floorsSelector/mediator/floorsSelectorMediator";
 import { SceneContainerMediator } from "./component/sceneContainer/mediator/sceneContainerMediator";
 
 export class Flow extends Controller {
@@ -16,13 +17,12 @@ export class Flow extends Controller {
     InjectionManager.bind(BuildLayout);
     //mediators
     InjectionManager.bind(SceneContainerMediator).init();
+    InjectionManager.bind(FloorsSelectorMediator).init();
+    InjectionManager.bind(CapacitySelectorMediator).init();
+    InjectionManager.bind(ElevatorMediator).init();
   }
 
   protected onAppReady(): void {
     InjectionManager.inject(BuildLayout).start();
-
-    setInterval(() => {
-      this.emit(BaseEvents.floorsChanged, new TransitionEffectData(0.5));
-    }, 1000);
   }
 }
