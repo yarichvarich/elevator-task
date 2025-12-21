@@ -1,6 +1,10 @@
+import type { EventEmitter } from "pixi.js";
+
 import { Controller } from "../controller/controller";
 
-export abstract class Mediator<ViewType> extends Controller {
+export abstract class Mediator<
+  ViewType extends EventEmitter,
+> extends Controller {
   protected _view: ViewType;
 
   constructor(view: ViewType) {
@@ -9,11 +13,13 @@ export abstract class Mediator<ViewType> extends Controller {
     this._view = view;
   }
 
-  protected initComponentHanlders(): void {}
+  protected initComponentHandlers(): void {}
 
   public set view(component: ViewType) {
+    if (this._view) this._view.removeAllListeners();
+
     this._view = component;
-    this.initComponentHanlders();
+    this.initComponentHandlers();
   }
 
   public get view(): ViewType {

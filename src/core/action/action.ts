@@ -7,16 +7,22 @@ import type { Callback } from "../type/callback";
 export abstract class Action {
   protected _onSuccess: Callback<void>[] = [];
   protected _onFailure: Callback<void>[] = [];
-  protected _state: ActionState = ActionStates.pending;
+  protected _call: ReturnType<typeof gsap.delayedCall> | undefined;
+  public state: ActionState = ActionStates.pending;
 
   public start(...args: any[]): void {
-    this._state = ActionStates.started;
+    this.state = ActionStates.started;
 
-    gsap.delayedCall(0, () => {
+    if (!this.guard()) {
+      this.resolve();
+      return;
+    }
+
+    this._call = gsap.delayedCall(0, () => {
       try {
         this.onExecute(args);
       } catch (error) {
-        this._state = ActionStates.failed;
+        this.state = ActionStates.failed;
 
         this.invokeOnFailure(error as Error);
 
@@ -25,8 +31,16 @@ export abstract class Action {
     });
   }
 
+  protected guard(): boolean {
+    return true;
+  }
+
+  public stop(): void {
+    this._call?.kill();
+  }
+
   public resolve() {
-    this._state = ActionStates.pending;
+    this.state = ActionStates.pending;
 
     if (this._onSuccess) {
       this.invokeOnSuccess();

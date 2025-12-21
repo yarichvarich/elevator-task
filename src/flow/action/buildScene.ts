@@ -2,7 +2,7 @@ import { Action } from "../../core/action/action";
 import { InjectionManager } from "../../core/injection/injectionManager";
 import { ElevatorMediator } from "../component/elevator/mediator/elevatorMediator";
 import { Elevator } from "../component/elevator/view/elevator";
-import { FloorsMediator } from "../component/floors/mediator/FloorsMediator";
+import { FloorsMediator } from "../component/floors/mediator/floorsMediator";
 import { Floors } from "../component/floors/view/floor";
 import { SceneContainerMediator } from "../component/sceneContainer/mediator/sceneContainerMediator";
 

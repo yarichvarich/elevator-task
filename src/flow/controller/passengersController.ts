@@ -15,12 +15,13 @@ export class PassengersController extends Controller {
   protected _readyToExecute = false;
 
   protected _spawnCall?: ReturnType<typeof gsap.delayedCall>;
-  protected _spawnInterval: number = 0.5;
+  protected _spawnInterval: number = 0.3;
 
   protected initHandlers(): void {
     this.addHandler(BaseEvents.floorsChanged, this.onDataChanged, this);
     this.addHandler(BaseEvents.capacityChanged, this.onDataChanged, this);
-    this.addHandler(BaseEvents.dataReady, this.onDataReady, this);
+    this.addHandler(BaseEvents.dataReady, this.startSpawn, this);
+    this.addHandler(BaseEvents.playShiftQeueue, this.startSpawn, this);
   }
 
   protected onDataChanged(): void {
@@ -28,7 +29,7 @@ export class PassengersController extends Controller {
     this._spawnCall?.kill();
   }
 
-  protected onDataReady() {
+  protected startSpawn() {
     this._readyToExecute = true;
 
     this._spawnCall = gsap.delayedCall(

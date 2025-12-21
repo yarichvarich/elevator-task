@@ -1,12 +1,20 @@
 import { Container, Graphics } from "pixi.js";
+import gsap from "gsap";
+import { Power0 } from "gsap";
 
 import { ComponentLike } from "../../../../core/mixin/componentLike";
 import { ElevatorConfig } from "../../../../model/config/elevatorConfig";
 import { InjectionManager } from "../../../../core/injection/injectionManager";
+import { ElevatorData } from "../../../../model/elevatorData";
+import type { MoveToFloorAnimationData } from "../../../data/moveToFloorAnimationData";
+import { FloorConfig } from "../../../../model/config/floorConfig";
 
 export class Elevator extends ComponentLike(Container) {
   protected _elevatorConfig: ElevatorConfig =
     InjectionManager.inject(ElevatorConfig);
+  protected _floorConfig: FloorConfig = InjectionManager.inject(FloorConfig);
+
+  protected _elevatorData: ElevatorData = InjectionManager.inject(ElevatorData);
 
   public graphics: Graphics;
 
@@ -17,6 +25,14 @@ export class Elevator extends ComponentLike(Container) {
     this.drawElevator();
 
     this.addChild(this.graphics);
+
+    this.position.y =
+      this._floorConfig.floorHeight *
+      (-this._elevatorData.currentFloor - 1 + this._floorConfig.floors);
+  }
+
+  protected onRemovedFromStage(): void {
+    gsap.killTweensOf(this);
   }
 
   private drawElevator(): void {
@@ -35,5 +51,23 @@ export class Elevator extends ComponentLike(Container) {
         width: 4,
         color: 0x000000,
       });
+  }
+
+  public playMoveToFloorAnimation(data: MoveToFloorAnimationData): void {
+    gsap.killTweensOf(this);
+
+    const delta = data.nextFloor - data.previousFloor;
+
+    const nextPos = this.y - delta * this._floorConfig.floorHeight;
+    gsap.to(this, {
+      y: nextPos,
+      duration: 0.8,
+      onComplete: () => {
+        if (data.callback) {
+          data.callback();
+        }
+      },
+      ease: Power0.easeInOut,
+    });
   }
 }

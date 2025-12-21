@@ -6,6 +6,7 @@ import { FloorConfig } from "../../../../model/config/floorConfig";
 import { ElevatorConfig } from "../../../../model/config/elevatorConfig";
 import type { SpawnData } from "../../../data/spawnData";
 import { PassengerWidget } from "./passenger";
+import { ComponentEvents } from "../../../../core/type/componentEvent";
 
 export class Floors extends ComponentLike(Container) {
   protected _floorsConfig: FloorConfig = InjectionManager.inject(FloorConfig);
@@ -26,6 +27,20 @@ export class Floors extends ComponentLike(Container) {
     this.position.set(
       this._elevatorConfig.elevatorWidth + 5,
       this._elevatorConfig.elevatorHeight
+    );
+  }
+
+  public playShiftQueue({ from }: { from: number }): void {
+    this._passengerList.forEach((p) => {
+      if (p.data.passenger.from === from) {
+        p.shiftPassenger();
+      }
+    });
+  }
+
+  public removePassengerFromList(id: string): void {
+    this._passengerList = this._passengerList.filter(
+      (p) => p.data.passenger.id !== id
     );
   }
 
@@ -51,11 +66,23 @@ export class Floors extends ComponentLike(Container) {
   public addPassenger(data: SpawnData): void {
     const passengerWidget = new PassengerWidget(data);
 
+    data.on("passengerArrived", () => {
+      this.emit(ComponentEvents.passengerArrived, data);
+    });
+
     this._passengerList.push(passengerWidget);
     this.addChild(passengerWidget);
   }
 
-  protected onResize(width: number, height: number): void {
+  protected onResize(): void {
     this.drawFloors();
+  }
+
+  public getPassenger(id: string, cb: (view: PassengerWidget) => void): void {
+    const passenger = this._passengerList.find((p) => p.id === id);
+
+    if (passenger) {
+      cb(passenger);
+    }
   }
 }

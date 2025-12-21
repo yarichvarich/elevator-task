@@ -4,7 +4,7 @@ import { ComponentEvents } from "../../../../core/type/componentEvent";
 import type { FloorsSelector } from "../view/floorsSelector";
 
 export class FloorsSelectorMediator extends Mediator<FloorsSelector> {
-  protected initComponentHanlders(): void {
+  protected initComponentHandlers(): void {
     this.view.on(
       ComponentEvents.floorsChanged,
       this.onFloorsChanged.bind(this)

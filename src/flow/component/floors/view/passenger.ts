@@ -8,6 +8,8 @@ import { InjectionManager } from "../../../../core/injection/injectionManager";
 import { FloorConfig } from "../../../../model/config/floorConfig";
 import { PassengerConfig } from "../../../../model/config/passengerConfig";
 import { PassengersData } from "../../../../model/passengers";
+import type { LoadPassengerAnimationData } from "../../../data/loadPassengerAnimationData";
+import type { UnloadPassengerAnimationData } from "../../../data/unloadPassengerAnimationData";
 
 export class PassengerWidget extends ComponentLike(Container) {
   protected _elevatorConfig: ElevatorConfig =
@@ -74,6 +76,7 @@ export class PassengerWidget extends ComponentLike(Container) {
   }
 
   public setupInitialAnimation(): void {
+    gsap.killTweensOf(this);
     const targetPosition = this.getTargetPositionX();
     const duration =
       Math.abs(targetPosition - this.x) / this._passengerConfig.passengerSpeed;
@@ -85,6 +88,8 @@ export class PassengerWidget extends ComponentLike(Container) {
         if (this._data.queuePosition === 0) {
           this._passengersData.floorQueues[this._data.passenger.from].isReady =
             true;
+
+          this._data.emit("passengerArrived", this._data);
         }
       },
     });
@@ -99,5 +104,45 @@ export class PassengerWidget extends ComponentLike(Container) {
       .rect(0, 0, 15, 25)
       .fill({ color })
       .stroke({ width: 2, color: 0x000000 });
+  }
+
+  public playLoadAnimation(data: LoadPassengerAnimationData): void {
+    gsap.to(this, {
+      x: data.destination,
+      onComplete: () => {
+        if (data.callback) {
+          data.callback();
+        }
+      },
+    });
+  }
+
+  public playUnloadAnimation(data: UnloadPassengerAnimationData): void {
+    gsap.to(this, {
+      x: data.destination,
+      onComplete: () => {
+        if (data.callback) {
+          this.destroy();
+          data.callback();
+        }
+      },
+    });
+  }
+
+  public shiftPassenger(): void {
+    this._data.queuePosition--;
+
+    this.setupInitialAnimation();
+  }
+
+  public get id(): string {
+    if (this._data) {
+      return this._data.passenger.id;
+    }
+    return "";
+  }
+
+  public get data(): SpawnData {
+    return this._data;
   }
 }

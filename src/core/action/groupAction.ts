@@ -10,6 +10,8 @@ export class GroupAction extends Action {
 
       lastAction.onSuccess(this.resolve.bind(this));
       firstAction.start();
+    } else {
+      this.resolve();
     }
   }
 

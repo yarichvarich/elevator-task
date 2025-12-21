@@ -4,7 +4,7 @@ import { ComponentEvents } from "../../../../core/type/componentEvent";
 import type { CapacitySelector } from "../view/capacitySelector";
 
 export class CapacitySelectorMediator extends Mediator<CapacitySelector> {
-  protected initComponentHanlders(): void {
+  protected initComponentHandlers(): void {
     this.view.on(ComponentEvents.capacityChanged, this.onCapacityChanged, this);
   }
 
