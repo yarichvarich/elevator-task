@@ -11,8 +11,6 @@ export class UpdateOrder extends Action {
     InjectionManager.inject(PassengersData);
 
   protected onExecute(): void {
-    const queues = this._passengerData.floorQueues;
-
     const lockedOrder = this._elevatorData.lockedOrder;
     if (!lockedOrder) {
       return;

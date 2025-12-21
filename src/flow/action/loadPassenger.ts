@@ -17,7 +17,7 @@ export class LoadPassenger extends Action {
     return super.guard();
   }
 
-  protected onExecute(...args: any[]): void {
+  protected onExecute(): void {
     if (!this._elevatorData.lockedOrder) {
       this.resolve();
       return;
