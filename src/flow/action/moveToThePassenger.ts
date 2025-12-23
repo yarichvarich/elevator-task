@@ -26,6 +26,7 @@ export class MoveToThePassenger extends Action {
         nextFloor,
         () => {
           this._elevatorData.currentFloor = nextFloor;
+          this._elevatorData.reachedPassengerFloor = true;
           this.resolve();
         }
       )

@@ -29,7 +29,6 @@ export class FloorsMediator extends Mediator<Floors> {
   }
 
   protected onPlayShiftQueue({ from }: { from: number }): void {
-    console.log(from);
     this.view.playShiftQueue({ from });
   }
 

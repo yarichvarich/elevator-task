@@ -57,11 +57,12 @@ export class Elevator extends ComponentLike(Container) {
     gsap.killTweensOf(this);
 
     const delta = data.nextFloor - data.previousFloor;
+    const deltaAbs = Math.abs(delta);
 
     const nextPos = this.y - delta * this._floorConfig.floorHeight;
     gsap.to(this, {
       y: nextPos,
-      duration: 0.8,
+      duration: 0.8 * deltaAbs,
       onComplete: () => {
         if (data.callback) {
           data.callback();

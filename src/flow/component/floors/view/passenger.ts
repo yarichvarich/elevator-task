@@ -59,6 +59,8 @@ export class PassengerWidget extends ComponentLike(Container) {
     );
     this.addChild(this.textLabel);
 
+    this._data.view = this;
+
     this.setupInitialAnimation();
   }
 
@@ -107,6 +109,8 @@ export class PassengerWidget extends ComponentLike(Container) {
   }
 
   public playLoadAnimation(data: LoadPassengerAnimationData): void {
+    gsap.killTweensOf(this);
+
     gsap.to(this, {
       x: data.destination,
       onComplete: () => {
@@ -118,19 +122,32 @@ export class PassengerWidget extends ComponentLike(Container) {
   }
 
   public playUnloadAnimation(data: UnloadPassengerAnimationData): void {
-    gsap.to(this, {
+    gsap.killTweensOf(this);
+
+    const animation = gsap.timeline();
+
+    animation.to(this, {
       x: data.destination,
       onComplete: () => {
         if (data.callback) {
-          this.destroy();
           data.callback();
         }
+      },
+      duration: 0.6,
+    });
+    animation.to(this, {
+      x: this._floorsConfig.floorWidth,
+      duration: 15,
+      onComplete: () => {
+        this.destroy();
       },
     });
   }
 
   public shiftPassenger(): void {
-    this._data.queuePosition--;
+    if (this._data.queuePosition !== 0) {
+      this._data.queuePosition--;
+    }
 
     this.setupInitialAnimation();
   }

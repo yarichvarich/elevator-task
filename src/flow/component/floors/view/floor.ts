@@ -66,6 +66,8 @@ export class Floors extends ComponentLike(Container) {
   public addPassenger(data: SpawnData): void {
     const passengerWidget = new PassengerWidget(data);
 
+    data.view = passengerWidget;
+
     data.on("passengerArrived", () => {
       this.emit(ComponentEvents.passengerArrived, data);
     });

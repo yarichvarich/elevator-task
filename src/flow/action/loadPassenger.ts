@@ -14,7 +14,7 @@ export class LoadPassenger extends Action {
     InjectionManager.inject(ElevatorConfig);
 
   protected guard(): boolean {
-    return super.guard();
+    return super.guard() && this._elevatorData.lockedOrder !== undefined;
   }
 
   protected onExecute(): void {
@@ -22,6 +22,7 @@ export class LoadPassenger extends Action {
       this.resolve();
       return;
     }
+
     let passengerView: PassengerWidget;
     let elevatorView: Elevator;
 
@@ -61,7 +62,6 @@ export class LoadPassenger extends Action {
     passengerView.playLoadAnimation(
       new LoadPassengerAnimationData(passengerDestination, () => {
         reparentKeepWorldPosition(passengerView, elevatorView);
-
         this.resolve();
       })
     );

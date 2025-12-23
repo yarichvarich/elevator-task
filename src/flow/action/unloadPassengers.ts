@@ -25,13 +25,9 @@ export class UnloadPassengers extends Action {
       this.resolve();
       return;
     }
-    let passengerView: PassengerWidget;
+
     let elevatorView: Elevator;
     let floorsView: Floors;
-
-    const setPassengerView = (view: PassengerWidget) => {
-      passengerView = view;
-    };
 
     const setElevatorView = (view: Elevator) => {
       elevatorView = view;
@@ -45,26 +41,21 @@ export class UnloadPassengers extends Action {
 
     const order = this._elevatorData.lockedOrder;
 
-    this.emit(BaseEvents.getPassegerView, {
-      id: order.passenger.id,
-      cb: setPassengerView,
-    });
-
     this.emit(BaseEvents.getElevatorView, { cb: setElevatorView });
 
     //@ts-expect-error
-    if (elevatorView === undefined || passengerView === undefined) {
+    if (elevatorView === undefined || order.view === undefined) {
       this.resolve();
       return;
     }
 
     const elevatorWidth = this._elevatorConfig.elevatorWidth;
-    const floorWidth = this._floorConfig.floorWidth;
 
-    const passengerDestination = 5 + elevatorWidth + floorWidth;
-    passengerView.playUnloadAnimation(
+    const passengerDestination = 5 + elevatorWidth;
+
+    order.view.playUnloadAnimation(
       new UnloadPassengerAnimationData(passengerDestination, () => {
-        reparentKeepWorldPosition(passengerView, floorsView);
+        reparentKeepWorldPosition(order.view, floorsView);
         this._elevatorData.lockedOrder = undefined;
         this.resolve();
       })

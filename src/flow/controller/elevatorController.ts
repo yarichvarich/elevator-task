@@ -12,10 +12,10 @@ import { UpdateOrder } from "../action/updateOrder";
 import type { SpawnData } from "../data/spawnData";
 
 export class ElevatorController extends Controller {
-  protected _readyToExecute: boolean = false;
-
   protected _elevatorMoveSequence: GroupAction = new GroupAction();
   protected _elevatorData: ElevatorData = InjectionManager.inject(ElevatorData);
+
+  protected _once = false;
 
   protected initHandlers(): void {
     this.addHandler(
@@ -27,15 +27,9 @@ export class ElevatorController extends Controller {
     this.addHandler(BaseEvents.dataReady, this.onDataReady, this);
   }
 
-  protected onDataReady(): void {
-    this._readyToExecute = true;
+  protected onDataReady(): void {}
 
-    this.generateMoveSequence();
-  }
-
-  protected onSceneRebuildStarted(): void {
-    this._readyToExecute = false;
-  }
+  protected onSceneRebuildStarted(): void {}
 
   protected onPassengerArrived(data: SpawnData): void {
     this._elevatorData.arrivalOrder.push(data);
@@ -60,6 +54,8 @@ export class ElevatorController extends Controller {
       this._elevatorData.lockedOrder = this._elevatorData.arrivalOrder.shift();
     }
 
+    this.generateMoveSequence();
+
     this._elevatorMoveSequence
       .onSuccess(() => {
         this.runMoveSequence();
@@ -69,13 +65,6 @@ export class ElevatorController extends Controller {
 
   protected generateMoveSequence(): void {
     this._elevatorMoveSequence = new GroupAction();
-
-    // this._elevatorMoveSequence.addAction(
-    //   InjectionManager.inject(UnloadPassengers)
-    // );
-    // this._elevatorMoveSequence.addAction(
-    //   InjectionManager.inject(LoadPassengers)
-    // );
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(MoveToThePassenger)
     );
@@ -89,8 +78,5 @@ export class ElevatorController extends Controller {
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(UnloadPassengers)
     );
-    // this._elevatorMoveSequence.addAction(
-    //   InjectionManager.inject(MoveToTheNextFloor)
-    // );
   }
 }

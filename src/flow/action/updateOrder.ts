@@ -13,6 +13,7 @@ export class UpdateOrder extends Action {
   protected onExecute(): void {
     const lockedOrder = this._elevatorData.lockedOrder;
     if (!lockedOrder) {
+      this.resolve();
       return;
     }
 
