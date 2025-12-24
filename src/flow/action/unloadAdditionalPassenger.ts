@@ -71,21 +71,12 @@ export class UnloadAdditionalPassenger extends Action {
 
     const passengerDestination = 5 + elevatorWidth;
 
-    // if (
-    //   this._elevatorData.currentFloor ===
-    //     this._elevatorData.lockedOrder.passenger.to &&
-    //   this._elevatorData.reachedPassengerFloor
-    // ) {
     passengerView.playUnloadAnimation(
       new UnloadPassengerAnimationData(passengerDestination, () => {
         reparentKeepWorldPosition(passengerView, floorsView);
-        console.log("additionalPassengerUnloaded");
+        this._elevatorData.needSorting = true;
         this.resolve();
       })
     );
-
-    // this.resolve();
-
-    console.log("unloading additional");
   }
 }

@@ -7,6 +7,7 @@ import { ElevatorData } from "../../model/elevatorData";
 import { LoadAdditionalPassenger } from "../action/loadAdditionalPassenger";
 import { LoadPassenger } from "../action/loadPassenger";
 import { MoveToThePassenger } from "../action/moveToThePassenger";
+import { SortAdditionalPassengers } from "../action/sortAdditionalPassengers";
 import { UnloadAdditionalPassenger } from "../action/unloadAdditionalPassenger";
 import { UnloadPassengers } from "../action/unloadPassengers";
 import type { SpawnData } from "../data/spawnData";
@@ -48,7 +49,6 @@ export class ElevatorController extends Controller {
     }
 
     if (this._elevatorData.lockedOrder === undefined) {
-      console.log("shifted");
       this._elevatorData.lockedOrder = this._elevatorData.arrivalOrder.shift();
     }
 
@@ -66,6 +66,9 @@ export class ElevatorController extends Controller {
 
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(UnloadAdditionalPassenger)
+    );
+    this._elevatorMoveSequence.addAction(
+      InjectionManager.inject(SortAdditionalPassengers)
     );
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(UnloadPassengers)

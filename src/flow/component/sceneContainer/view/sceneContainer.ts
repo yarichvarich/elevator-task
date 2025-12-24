@@ -32,6 +32,11 @@ export class SceneContainer extends ComponentLike(Container) {
     this.center();
   }
 
+  protected onRemovedFromStage(): void {
+    gsap.killTweensOf(this.snapshot);
+    gsap.killTweensOf(this.content);
+  }
+
   public rebuildStarted(): void {
     if (this.children.includes(this.snapshot)) {
       this.removeChild(this.snapshot);

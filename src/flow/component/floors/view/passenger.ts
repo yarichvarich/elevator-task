@@ -24,6 +24,7 @@ export class PassengerWidget extends ComponentLike(Container) {
   public textLabel: Text;
 
   protected _data: SpawnData;
+  protected _unloadAnimation: any;
 
   constructor(data: SpawnData) {
     super();
@@ -65,6 +66,11 @@ export class PassengerWidget extends ComponentLike(Container) {
   }
 
   protected onRemovedFromStage() {
+    if (this._unloadAnimation) {
+      this._unloadAnimation.kill();
+      this._unloadAnimation = undefined;
+    }
+
     gsap.killTweensOf(this);
   }
 
@@ -125,10 +131,12 @@ export class PassengerWidget extends ComponentLike(Container) {
     gsap.killTweensOf(this);
 
     const animation = gsap.timeline();
+    this._unloadAnimation = animation;
 
     animation.to(this, {
       x: data.destination,
       onComplete: () => {
+        if (!this.parent) return;
         if (data.callback) {
           data.callback();
         }
@@ -139,6 +147,7 @@ export class PassengerWidget extends ComponentLike(Container) {
       x: this._floorsConfig.floorWidth,
       duration: 15,
       onComplete: () => {
+        if ((this as any).destroyed) return;
         this.destroy();
       },
     });

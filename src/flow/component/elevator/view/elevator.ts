@@ -54,8 +54,6 @@ export class Elevator extends ComponentLike(Container) {
   }
 
   public playMoveToFloorAnimation(data: MoveToFloorAnimationData): void {
-    gsap.killTweensOf(this);
-
     const delta = data.nextFloor - data.previousFloor;
     const deltaAbs = Math.abs(delta);
 

@@ -12,6 +12,7 @@ import { LoadPassenger } from "./action/loadPassenger";
 import { MoveToTheDestination } from "./action/moveToTheDestination";
 import { MoveToThePassenger } from "./action/moveToThePassenger";
 import { ResetData } from "./action/resetData";
+import { SortAdditionalPassengers } from "./action/sortAdditionalPassengers";
 import { UnloadAdditionalPassenger } from "./action/unloadAdditionalPassenger";
 import { UnloadPassengers } from "./action/unloadPassengers";
 import { UpdateOrder } from "./action/updateOrder";
@@ -45,6 +46,7 @@ export class Flow extends Controller {
     InjectionManager.bind(LoadPassenger);
     InjectionManager.bind(LoadAdditionalPassenger);
     InjectionManager.bind(UnloadAdditionalPassenger);
+    InjectionManager.bind(SortAdditionalPassengers);
     //mediators
     InjectionManager.bind(SceneContainerMediator).init();
     InjectionManager.bind(FloorsSelectorMediator).init();

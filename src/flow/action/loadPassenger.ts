@@ -17,8 +17,6 @@ export class LoadPassenger extends Action {
   }
 
   protected loadMainPassenger() {
-    console.log("loadingMain");
-
     if (!this._elevatorData.lockedOrder) {
       this._elevatorData.lockedOrder = this._elevatorData.arrivalOrder.shift();
       this.resolve();
@@ -57,11 +55,15 @@ export class LoadPassenger extends Action {
 
     this._elevatorData.lockedOrder.view?.playLoadAnimation(
       new LoadPassengerAnimationData(passengerDestination, () => {
-        reparentKeepWorldPosition(passengerView, elevatorView);
+        if (passengerView && elevatorView && passengerView.parent) {
+          reparentKeepWorldPosition(passengerView, elevatorView);
+        }
+
         this.emitSync(
           BaseEvents.playShiftQeueue,
           this._elevatorData.lockedOrder
         );
+
         this._elevatorData.tryPopLockedOrder();
         this._elevatorData.loadedMainPassenger = true;
 

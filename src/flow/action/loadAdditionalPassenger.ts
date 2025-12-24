@@ -17,19 +17,12 @@ export class LoadAdditionalPassenger extends Action {
   }
 
   protected onExecute(...args: any[]): void {
-    console.log(
-      "additionalPassengerCanbeLoaded",
-      this._elevatorData.getAdditionalPassenger()
-    );
-
     const addPassenger = this._elevatorData.getAdditionalPassenger();
 
     if (!addPassenger) {
       this.resolve();
       return;
     }
-
-    console.log(this._elevatorData.calculateTargetFloor());
 
     const passengerView = addPassenger.view;
     let elevatorView: Elevator;
@@ -73,6 +66,5 @@ export class LoadAdditionalPassenger extends Action {
         this.resolve();
       })
     );
-    // this.resolve();
   }
 }

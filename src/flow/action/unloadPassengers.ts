@@ -53,21 +53,16 @@ export class UnloadPassengers extends Action {
 
     const passengerDestination = 5 + elevatorWidth;
 
-    // if (
-    //   this._elevatorData.currentFloor ===
-    //     this._elevatorData.lockedOrder.passenger.to &&
-    //   this._elevatorData.reachedPassengerFloor
-    // ) {
     order.view.playUnloadAnimation(
       new UnloadPassengerAnimationData(passengerDestination, () => {
-        reparentKeepWorldPosition(order.view, floorsView);
+        if (order.view && floorsView && order.view.parent) {
+          reparentKeepWorldPosition(order.view, floorsView);
+        }
+
         this._elevatorData.tryPopLockedOrder();
-        console.log("unloadedMainPassenger");
+
         this.resolve();
       })
     );
-    // } else {
-    //   this.resolve();
-    // }
   }
 }

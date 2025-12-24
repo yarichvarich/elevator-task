@@ -19,14 +19,6 @@ export class MoveToThePassenger extends Action {
 
     const nextFloor = this._elevatorData.calculateTargetFloor();
 
-    console.log(
-      "nextFloror",
-      nextFloor,
-      "targetFloor",
-      this._elevatorData.lockedOrder.passenger,
-      this._elevatorData
-    );
-
     this.emit(
       BaseEvents.playMoveToFloorAnimation,
       new MoveToFloorAnimationData(
@@ -37,7 +29,6 @@ export class MoveToThePassenger extends Action {
           this._elevatorData.reachedPassengerFloor =
             this._elevatorData.currentFloor ===
             this._elevatorData.lockedOrder!.passenger.from;
-          console.log("reachedFloor");
           this.resolve();
         }
       )
