@@ -3,25 +3,43 @@ import { InjectionManager } from "../../core/injection/injectionManager";
 import { BaseEvents } from "../../core/type/baseEvent";
 import { reparentKeepWorldPosition } from "../../core/utils/reparentKeepWorld";
 import { ElevatorConfig } from "../../model/config/elevatorConfig";
-import { FloorConfig } from "../../model/config/floorConfig";
 import { ElevatorData } from "../../model/elevatorData";
 import type { Elevator } from "../component/elevator/view/elevator";
 import type { Floors } from "../component/floors/view/floor";
-import type { SpawnData } from "../data/spawnData";
 import { UnloadPassengerAnimationData } from "../data/unloadPassengerAnimationData";
 
-export class UnloadPassengers extends Action {
+export class UnloadAdditionalPassenger extends Action {
   protected _elevatorData: ElevatorData = InjectionManager.inject(ElevatorData);
   protected _elevatorConfig: ElevatorConfig =
     InjectionManager.inject(ElevatorConfig);
-  protected _floorConfig: FloorConfig = InjectionManager.inject(FloorConfig);
 
   protected guard(): boolean {
-    return super.guard() && this._elevatorData.canUnload();
+    return super.guard() && this._elevatorData.canUnloadAdditionalPassenger();
   }
 
   protected onExecute(): void {
-    if (!this._elevatorData.lockedOrder) {
+    if (this._elevatorData.additionalPassengers.length === 0) {
+      this.resolve();
+      return;
+    }
+
+    const additionalPassenger = this._elevatorData.additionalPassengers.find(
+      (p) => p.passenger.to === this._elevatorData.currentFloor
+    );
+
+    if (!additionalPassenger) {
+      this.resolve();
+      return;
+    }
+
+    this._elevatorData.additionalPassengers =
+      this._elevatorData.additionalPassengers.filter(
+        (p) => p !== additionalPassenger
+      );
+
+    const passengerView = additionalPassenger.view;
+
+    if (!passengerView) {
       this.resolve();
       return;
     }
@@ -58,16 +76,16 @@ export class UnloadPassengers extends Action {
     //     this._elevatorData.lockedOrder.passenger.to &&
     //   this._elevatorData.reachedPassengerFloor
     // ) {
-    order.view.playUnloadAnimation(
+    passengerView.playUnloadAnimation(
       new UnloadPassengerAnimationData(passengerDestination, () => {
-        reparentKeepWorldPosition(order.view, floorsView);
-        this._elevatorData.tryPopLockedOrder();
-        console.log("unloadedMainPassenger");
+        reparentKeepWorldPosition(passengerView, floorsView);
+        console.log("additionalPassengerUnloaded");
         this.resolve();
       })
     );
-    // } else {
-    //   this.resolve();
-    // }
+
+    // this.resolve();
+
+    console.log("unloading additional");
   }
 }

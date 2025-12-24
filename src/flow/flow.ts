@@ -7,10 +7,12 @@ import { ElevatorData } from "../model/elevatorData";
 import { PassengersData } from "../model/passengers";
 import { BuildLayout } from "./action/buildLayout";
 import { BuildScene } from "./action/buildScene";
+import { LoadAdditionalPassenger } from "./action/loadAdditionalPassenger";
 import { LoadPassenger } from "./action/loadPassenger";
 import { MoveToTheDestination } from "./action/moveToTheDestination";
 import { MoveToThePassenger } from "./action/moveToThePassenger";
 import { ResetData } from "./action/resetData";
+import { UnloadAdditionalPassenger } from "./action/unloadAdditionalPassenger";
 import { UnloadPassengers } from "./action/unloadPassengers";
 import { UpdateOrder } from "./action/updateOrder";
 import { CapacitySelectorMediator } from "./component/capacitySelector/mediator/capacitySelectorMediator";
@@ -41,6 +43,8 @@ export class Flow extends Controller {
     InjectionManager.bind(MoveToTheDestination);
     InjectionManager.bind(UnloadPassengers);
     InjectionManager.bind(LoadPassenger);
+    InjectionManager.bind(LoadAdditionalPassenger);
+    InjectionManager.bind(UnloadAdditionalPassenger);
     //mediators
     InjectionManager.bind(SceneContainerMediator).init();
     InjectionManager.bind(FloorsSelectorMediator).init();

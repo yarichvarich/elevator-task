@@ -4,8 +4,10 @@ import { InjectionManager } from "../../core/injection/injectionManager";
 import { ActionStates } from "../../core/type/actionState";
 import { BaseEvents } from "../../core/type/baseEvent";
 import { ElevatorData } from "../../model/elevatorData";
+import { LoadAdditionalPassenger } from "../action/loadAdditionalPassenger";
 import { LoadPassenger } from "../action/loadPassenger";
 import { MoveToThePassenger } from "../action/moveToThePassenger";
+import { UnloadAdditionalPassenger } from "../action/unloadAdditionalPassenger";
 import { UnloadPassengers } from "../action/unloadPassengers";
 import type { SpawnData } from "../data/spawnData";
 
@@ -25,7 +27,9 @@ export class ElevatorController extends Controller {
     this.addHandler(BaseEvents.dataReady, this.onDataReady, this);
   }
 
-  protected onDataReady(): void {}
+  protected onDataReady(): void {
+    this.generateMoveSequence();
+  }
 
   protected onSceneRebuildStarted(): void {}
 
@@ -44,6 +48,7 @@ export class ElevatorController extends Controller {
     }
 
     if (this._elevatorData.lockedOrder === undefined) {
+      console.log("shifted");
       this._elevatorData.lockedOrder = this._elevatorData.arrivalOrder.shift();
     }
 
@@ -58,8 +63,15 @@ export class ElevatorController extends Controller {
 
   protected generateMoveSequence(): void {
     this._elevatorMoveSequence = new GroupAction();
+
+    this._elevatorMoveSequence.addAction(
+      InjectionManager.inject(UnloadAdditionalPassenger)
+    );
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(UnloadPassengers)
+    );
+    this._elevatorMoveSequence.addAction(
+      InjectionManager.inject(LoadAdditionalPassenger)
     );
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(LoadPassenger)
@@ -67,9 +79,5 @@ export class ElevatorController extends Controller {
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(MoveToThePassenger)
     );
-    // this._elevatorMoveSequence.addAction(InjectionManager.inject(UpdateOrder));
-    // this._elevatorMoveSequence.addAction(
-    //   InjectionManager.inject(MoveToTheDestination)
-    // );
   }
 }

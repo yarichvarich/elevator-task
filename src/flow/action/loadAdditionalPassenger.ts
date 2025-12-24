@@ -7,25 +7,31 @@ import { ElevatorData } from "../../model/elevatorData";
 import type { Elevator } from "../component/elevator/view/elevator";
 import { LoadPassengerAnimationData } from "../data/loadPassengerAnimationData";
 
-export class LoadPassenger extends Action {
+export class LoadAdditionalPassenger extends Action {
   protected _elevatorData: ElevatorData = InjectionManager.inject(ElevatorData);
   protected _elevatorConfig: ElevatorConfig =
     InjectionManager.inject(ElevatorConfig);
 
   protected guard(): boolean {
-    return super.guard() && this._elevatorData.canLoad();
+    return super.guard() && this._elevatorData.canLoadAdditionalPassenger();
   }
 
-  protected loadMainPassenger() {
-    console.log("loadingMain");
+  protected onExecute(...args: any[]): void {
+    console.log(
+      "additionalPassengerCanbeLoaded",
+      this._elevatorData.getAdditionalPassenger()
+    );
 
-    if (!this._elevatorData.lockedOrder) {
-      this._elevatorData.lockedOrder = this._elevatorData.arrivalOrder.shift();
+    const addPassenger = this._elevatorData.getAdditionalPassenger();
+
+    if (!addPassenger) {
       this.resolve();
       return;
     }
 
-    const passengerView = this._elevatorData.lockedOrder.view;
+    console.log(this._elevatorData.calculateTargetFloor());
+
+    const passengerView = addPassenger.view;
     let elevatorView: Elevator;
 
     const setElevatorView = (view: Elevator) => {
@@ -45,7 +51,7 @@ export class LoadPassenger extends Action {
       return;
     }
 
-    const currentCapacity = 0;
+    const currentCapacity = this._elevatorData.additionalPassengers.length + 1;
     const maxCapacity = this._elevatorConfig.capacity;
     const elevatorWidth = this._elevatorConfig.elevatorWidth;
 
@@ -55,28 +61,18 @@ export class LoadPassenger extends Action {
       (currentCapacity / maxCapacity) * elevatorWidth +
       passengerView.x;
 
-    this._elevatorData.lockedOrder.view?.playLoadAnimation(
+    passengerView.playLoadAnimation(
       new LoadPassengerAnimationData(passengerDestination, () => {
         reparentKeepWorldPosition(passengerView, elevatorView);
-        this.emitSync(
-          BaseEvents.playShiftQeueue,
-          this._elevatorData.lockedOrder
-        );
-        this._elevatorData.tryPopLockedOrder();
-        this._elevatorData.loadedMainPassenger = true;
+        this.emitSync(BaseEvents.playShiftQeueue, addPassenger);
+
+        this._elevatorData.additionalPassengers.push(addPassenger);
+        this._elevatorData.arrivalOrder =
+          this._elevatorData.arrivalOrder.filter((p) => p !== addPassenger);
 
         this.resolve();
       })
     );
-  }
-
-  protected onExecute(): void {
-    if (
-      this._elevatorData.lockedOrder?.passenger.from ===
-      this._elevatorData.currentFloor
-    ) {
-      this.loadMainPassenger();
-      return;
-    }
+    // this.resolve();
   }
 }
