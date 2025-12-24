@@ -1,11 +1,16 @@
+import { InjectionManager } from "../../../../core/injection/injectionManager";
 import { Mediator } from "../../../../core/mediator/mediator";
 import { BaseEvents } from "../../../../core/type/baseEvent";
 import { ComponentEvents } from "../../../../core/type/componentEvent";
+import { PassengersData } from "../../../../model/passengers";
 import type { SpawnData } from "../../../data/spawnData";
 import type { Floors } from "../view/floor";
 import type { PassengerWidget } from "../view/passenger";
 
 export class FloorsMediator extends Mediator<Floors> {
+  protected _passengersData: PassengersData =
+    InjectionManager.inject(PassengersData);
+
   protected initComponentHandlers(): void {
     this.view.on(
       ComponentEvents.passengerArrived,
@@ -28,8 +33,10 @@ export class FloorsMediator extends Mediator<Floors> {
     this.view.addPassenger(data);
   }
 
-  protected onPlayShiftQueue({ from }: { from: number }): void {
-    this.view.playShiftQueue({ from });
+  protected onPlayShiftQueue(data: SpawnData): void {
+    this._passengersData.shiftQueue(data.passenger.from);
+    this.view.removePassengerFromList(data.passenger.id);
+    this.view.playShiftQueue(data);
   }
 
   protected onPassengerArrived(data: SpawnData): void {

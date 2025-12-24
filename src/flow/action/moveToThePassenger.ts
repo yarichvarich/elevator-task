@@ -17,7 +17,7 @@ export class MoveToThePassenger extends Action {
       return;
     }
 
-    const nextFloor = this._elevatorData.lockedOrder.passenger.from;
+    const nextFloor = this._elevatorData.calculateTargetFloor();
 
     this.emit(
       BaseEvents.playMoveToFloorAnimation,

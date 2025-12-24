@@ -5,7 +5,6 @@ import { reparentKeepWorldPosition } from "../../core/utils/reparentKeepWorld";
 import { ElevatorConfig } from "../../model/config/elevatorConfig";
 import { ElevatorData } from "../../model/elevatorData";
 import type { Elevator } from "../component/elevator/view/elevator";
-import type { PassengerWidget } from "../component/floors/view/passenger";
 import { LoadPassengerAnimationData } from "../data/loadPassengerAnimationData";
 
 export class LoadPassenger extends Action {
@@ -14,7 +13,11 @@ export class LoadPassenger extends Action {
     InjectionManager.inject(ElevatorConfig);
 
   protected guard(): boolean {
-    return super.guard() && this._elevatorData.lockedOrder !== undefined;
+    return (
+      super.guard() &&
+      this._elevatorData.lockedOrder !== undefined &&
+      this._elevatorData.reachedPassengerFloor
+    );
   }
 
   protected onExecute(): void {
@@ -23,33 +26,27 @@ export class LoadPassenger extends Action {
       return;
     }
 
-    let passengerView: PassengerWidget;
+    const passengerView = this._elevatorData.lockedOrder.view;
     let elevatorView: Elevator;
-
-    const setPassengerView = (view: PassengerWidget) => {
-      passengerView = view;
-    };
 
     const setElevatorView = (view: Elevator) => {
       elevatorView = view;
     };
 
-    const order = this._elevatorData.lockedOrder;
-
-    this.emit(BaseEvents.getPassegerView, {
-      id: order.passenger.id,
-      cb: setPassengerView,
-    });
-
-    this.emit(BaseEvents.getElevatorView, { cb: setElevatorView });
+    this.emitSync(BaseEvents.getElevatorView, { cb: setElevatorView });
 
     //@ts-expect-error
-    if (elevatorView === undefined || passengerView === undefined) {
+    if (elevatorView === undefined) {
       this.resolve();
       return;
     }
 
-    const currentCapacity = this._elevatorData.capacity;
+    if (passengerView === undefined) {
+      this.resolve();
+      return;
+    }
+
+    const currentCapacity = 1;
     const maxCapacity = this._elevatorConfig.capacity;
     const elevatorWidth = this._elevatorConfig.elevatorWidth;
 
@@ -59,9 +56,13 @@ export class LoadPassenger extends Action {
       (currentCapacity / maxCapacity) * elevatorWidth +
       passengerView.x;
 
-    passengerView.playLoadAnimation(
+    this._elevatorData.lockedOrder.view?.playLoadAnimation(
       new LoadPassengerAnimationData(passengerDestination, () => {
         reparentKeepWorldPosition(passengerView, elevatorView);
+        this.emitSync(
+          BaseEvents.playShiftQeueue,
+          this._elevatorData.lockedOrder
+        );
         this.resolve();
       })
     );

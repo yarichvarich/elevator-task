@@ -30,9 +30,9 @@ export class Floors extends ComponentLike(Container) {
     );
   }
 
-  public playShiftQueue({ from }: { from: number }): void {
+  public playShiftQueue(data: SpawnData): void {
     this._passengerList.forEach((p) => {
-      if (p.data.passenger.from === from) {
+      if (p.data.passenger.from === data.passenger.from) {
         p.shiftPassenger();
       }
     });

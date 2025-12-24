@@ -36,6 +36,5 @@ export class ResetData extends Action {
     this._elevatorData.lockedOrder = undefined;
     this._elevatorData.reachedPassengerDestination = false;
     this._elevatorData.reachedPassengerFloor = false;
-    this._elevatorData.capacity = 0;
   }
 }

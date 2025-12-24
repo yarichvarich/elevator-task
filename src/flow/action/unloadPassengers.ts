@@ -7,7 +7,7 @@ import { FloorConfig } from "../../model/config/floorConfig";
 import { ElevatorData } from "../../model/elevatorData";
 import type { Elevator } from "../component/elevator/view/elevator";
 import type { Floors } from "../component/floors/view/floor";
-import type { PassengerWidget } from "../component/floors/view/passenger";
+import type { SpawnData } from "../data/spawnData";
 import { UnloadPassengerAnimationData } from "../data/unloadPassengerAnimationData";
 
 export class UnloadPassengers extends Action {
@@ -16,8 +16,58 @@ export class UnloadPassengers extends Action {
     InjectionManager.inject(ElevatorConfig);
   protected _floorConfig: FloorConfig = InjectionManager.inject(FloorConfig);
 
+  protected get isOrderFulfilled(): boolean {
+    if (!this._elevatorData.lockedOrder) {
+      return false;
+    }
+
+    return (
+      this._elevatorData.lockedOrder.passenger.to ===
+      this._elevatorData.currentFloor
+    );
+  }
+
+  protected get passengersToUnload(): SpawnData[] {
+    if (!this._elevatorData.lockedOrder) {
+      return [];
+    }
+
+    return this._elevatorData.additionalPassengers.filter(
+      (ap) => ap.passenger.to === this._elevatorData.currentFloor
+    );
+  }
+
+  protected playUnloadAdditionalPassengers(
+    elevatorView: Elevator,
+    floorsView: Floors
+  ): void {
+    const animation = gsap.timeline();
+
+    const elevatorWidth = this._elevatorConfig.elevatorWidth;
+
+    this.passengersToUnload.forEach((p) => {
+      animation.to(this, {
+        duration: 0.3,
+        onComplete: () => {
+          const destination = elevatorWidth + 5;
+
+          p.view?.playUnloadAnimation(
+            new UnloadPassengerAnimationData(destination, () => {
+              reparentKeepWorldPosition(p.view, floorsView);
+              this.passengersToUnload.shift();
+            })
+          );
+        },
+      });
+    });
+  }
+
   protected guard(): boolean {
-    return super.guard();
+    return (
+      this._elevatorData.currentFloor ===
+        this._elevatorData.lockedOrder?.passenger.to &&
+      this._elevatorData.reachedPassengerFloor
+    );
   }
 
   protected onExecute(): void {
@@ -37,11 +87,11 @@ export class UnloadPassengers extends Action {
       floorsView = view;
     };
 
-    this.emit(BaseEvents.getFloorsView, { cb: setFloorView });
+    this.emitSync(BaseEvents.getFloorsView, { cb: setFloorView });
 
     const order = this._elevatorData.lockedOrder;
 
-    this.emit(BaseEvents.getElevatorView, { cb: setElevatorView });
+    this.emitSync(BaseEvents.getElevatorView, { cb: setElevatorView });
 
     //@ts-expect-error
     if (elevatorView === undefined || order.view === undefined) {
@@ -53,12 +103,20 @@ export class UnloadPassengers extends Action {
 
     const passengerDestination = 5 + elevatorWidth;
 
+    // if (
+    //   this._elevatorData.currentFloor ===
+    //     this._elevatorData.lockedOrder.passenger.to &&
+    //   this._elevatorData.reachedPassengerFloor
+    // ) {
     order.view.playUnloadAnimation(
       new UnloadPassengerAnimationData(passengerDestination, () => {
         reparentKeepWorldPosition(order.view, floorsView);
-        this._elevatorData.lockedOrder = undefined;
+        this._elevatorData.tryPopLockedOrder();
         this.resolve();
       })
     );
+    // } else {
+    //   this.resolve();
+    // }
   }
 }

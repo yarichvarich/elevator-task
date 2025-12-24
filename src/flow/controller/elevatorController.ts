@@ -5,10 +5,8 @@ import { ActionStates } from "../../core/type/actionState";
 import { BaseEvents } from "../../core/type/baseEvent";
 import { ElevatorData } from "../../model/elevatorData";
 import { LoadPassenger } from "../action/loadPassenger";
-import { MoveToTheDestination } from "../action/moveToTheDestination";
 import { MoveToThePassenger } from "../action/moveToThePassenger";
 import { UnloadPassengers } from "../action/unloadPassengers";
-import { UpdateOrder } from "../action/updateOrder";
 import type { SpawnData } from "../data/spawnData";
 
 export class ElevatorController extends Controller {
@@ -41,11 +39,6 @@ export class ElevatorController extends Controller {
       return;
     }
 
-    if (this._elevatorData.reachedPassengerDestination) {
-      this._elevatorData.reachedPassengerDestination = false;
-      this._elevatorData.reachedPassengerFloor = false;
-    }
-
     if (this._elevatorData.arrivalOrder.length === 0) {
       return;
     }
@@ -66,17 +59,17 @@ export class ElevatorController extends Controller {
   protected generateMoveSequence(): void {
     this._elevatorMoveSequence = new GroupAction();
     this._elevatorMoveSequence.addAction(
-      InjectionManager.inject(MoveToThePassenger)
+      InjectionManager.inject(UnloadPassengers)
     );
     this._elevatorMoveSequence.addAction(
       InjectionManager.inject(LoadPassenger)
     );
-    this._elevatorMoveSequence.addAction(InjectionManager.inject(UpdateOrder));
     this._elevatorMoveSequence.addAction(
-      InjectionManager.inject(MoveToTheDestination)
+      InjectionManager.inject(MoveToThePassenger)
     );
-    this._elevatorMoveSequence.addAction(
-      InjectionManager.inject(UnloadPassengers)
-    );
+    // this._elevatorMoveSequence.addAction(InjectionManager.inject(UpdateOrder));
+    // this._elevatorMoveSequence.addAction(
+    //   InjectionManager.inject(MoveToTheDestination)
+    // );
   }
 }

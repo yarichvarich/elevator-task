@@ -1,5 +1,3 @@
-import gsap from "gsap";
-
 import { EventBus } from "../eventBus/eventBus";
 import { ActionStates, type ActionState } from "../type/actionState";
 import type { Callback } from "../type/callback";
@@ -7,7 +5,6 @@ import type { Callback } from "../type/callback";
 export abstract class Action {
   protected _onSuccess: Callback<void>[] = [];
   protected _onFailure: Callback<void>[] = [];
-  protected _call: ReturnType<typeof gsap.delayedCall> | undefined;
   public state: ActionState = ActionStates.pending;
 
   public start(...args: any[]): void {
@@ -18,32 +15,30 @@ export abstract class Action {
       return;
     }
 
-    this._call = gsap.delayedCall(0, () => {
-      try {
-        this.onExecute(args);
-      } catch (error) {
-        this.state = ActionStates.failed;
+    try {
+      this.onExecute(args);
+    } catch (error) {
+      this.state = ActionStates.failed;
 
-        this.invokeOnFailure(error as Error);
+      this.invokeOnFailure(error as Error);
 
-        throw error;
-      }
-    });
+      throw error;
+    }
   }
 
   protected guard(): boolean {
     return true;
   }
 
-  public stop(): void {
-    this._call?.kill();
-  }
-
-  public resolve() {
+  public async resolve() {
     this.state = ActionStates.pending;
 
+    Promise.resolve();
+
     if (this._onSuccess) {
-      this.invokeOnSuccess();
+      queueMicrotask(() => {
+        this.invokeOnSuccess();
+      });
     }
   }
 
@@ -94,6 +89,10 @@ export abstract class Action {
   }
 
   protected emit(message: string, data?: any) {
+    queueMicrotask(() => EventBus.emit(message, data));
+  }
+
+  protected emitSync(message: string, data?: any) {
     EventBus.emit(message, data);
   }
 

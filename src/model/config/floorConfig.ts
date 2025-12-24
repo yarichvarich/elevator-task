@@ -6,5 +6,5 @@ export class FloorConfig {
   public floorHeight: number = 60;
   public floorWidth: number = 600;
 
-  public maxFloorCapacity: number = 5;
+  public maxFloorCapacity: number = 2;
 }
