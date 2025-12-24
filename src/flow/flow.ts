@@ -14,7 +14,6 @@ import { ResetData } from "./action/resetData";
 import { SortAdditionalPassengers } from "./action/sortAdditionalPassengers";
 import { UnloadAdditionalPassenger } from "./action/unloadAdditionalPassenger";
 import { UnloadPassengers } from "./action/unloadPassengers";
-import { UpdateOrder } from "./action/updateOrder";
 import { CapacitySelectorMediator } from "./component/capacitySelector/mediator/capacitySelectorMediator";
 import { ElevatorMediator } from "./component/elevator/mediator/elevatorMediator";
 import { FloorsMediator } from "./component/floors/mediator/floorsMediator";
@@ -38,7 +37,6 @@ export class Flow extends Controller {
     InjectionManager.bind(BuildLayout);
     InjectionManager.bind(BuildScene);
     InjectionManager.bind(ResetData);
-    InjectionManager.bind(UpdateOrder);
     InjectionManager.bind(MoveToThePassenger);
     InjectionManager.bind(UnloadPassengers);
     InjectionManager.bind(LoadPassenger);

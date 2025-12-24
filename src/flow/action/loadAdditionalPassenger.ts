@@ -16,7 +16,7 @@ export class LoadAdditionalPassenger extends Action {
     return super.guard() && this._elevatorData.canLoadAdditionalPassenger();
   }
 
-  protected onExecute(...args: any[]): void {
+  protected onExecute(): void {
     const addPassenger = this._elevatorData.getAdditionalPassenger();
 
     if (!addPassenger) {

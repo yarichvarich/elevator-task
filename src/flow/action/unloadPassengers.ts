@@ -7,7 +7,6 @@ import { FloorConfig } from "../../model/config/floorConfig";
 import { ElevatorData } from "../../model/elevatorData";
 import type { Elevator } from "../component/elevator/view/elevator";
 import type { Floors } from "../component/floors/view/floor";
-import type { SpawnData } from "../data/spawnData";
 import { UnloadPassengerAnimationData } from "../data/unloadPassengerAnimationData";
 
 export class UnloadPassengers extends Action {

@@ -37,5 +37,7 @@ export class ResetData extends Action {
     this._elevatorData.reachedPassengerDestination = false;
     this._elevatorData.reachedPassengerFloor = false;
     this._elevatorData.loadedMainPassenger = false;
+    this._elevatorData.needSorting = false;
+    this._elevatorData.additionalPassengers = [];
   }
 }
