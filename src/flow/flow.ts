@@ -9,7 +9,6 @@ import { BuildLayout } from "./action/buildLayout";
 import { BuildScene } from "./action/buildScene";
 import { LoadAdditionalPassenger } from "./action/loadAdditionalPassenger";
 import { LoadPassenger } from "./action/loadPassenger";
-import { MoveToTheDestination } from "./action/moveToTheDestination";
 import { MoveToThePassenger } from "./action/moveToThePassenger";
 import { ResetData } from "./action/resetData";
 import { SortAdditionalPassengers } from "./action/sortAdditionalPassengers";
@@ -41,7 +40,6 @@ export class Flow extends Controller {
     InjectionManager.bind(ResetData);
     InjectionManager.bind(UpdateOrder);
     InjectionManager.bind(MoveToThePassenger);
-    InjectionManager.bind(MoveToTheDestination);
     InjectionManager.bind(UnloadPassengers);
     InjectionManager.bind(LoadPassenger);
     InjectionManager.bind(LoadAdditionalPassenger);
