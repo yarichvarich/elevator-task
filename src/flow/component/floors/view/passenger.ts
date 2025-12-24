@@ -120,6 +120,7 @@ export class PassengerWidget extends ComponentLike(Container) {
     gsap.to(this, {
       x: data.destination,
       onComplete: () => {
+        if (!this.parent) return;
         if (data.callback) {
           data.callback();
         }

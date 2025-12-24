@@ -15,7 +15,7 @@ export class PassengersController extends Controller {
   protected _readyToExecute = false;
 
   protected _spawnCall?: ReturnType<typeof gsap.delayedCall>;
-  protected _spawnInterval: number = 0.1;
+  protected _spawnInterval: number = 4;
 
   protected initHandlers(): void {
     this.addHandler(BaseEvents.floorsChanged, this.onDataChanged, this);

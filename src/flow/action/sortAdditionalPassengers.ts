@@ -27,9 +27,9 @@ export class SortAdditionalPassengers extends Action {
     }
 
     viewList.forEach((v, idx) => {
-      const passengerDestination = +(idx / maxCapacity) * elevatorWidth + v.x;
+      const passengerDestination = ((idx + 2) / maxCapacity) * elevatorWidth;
 
-      v?.playLoadAnimation(
+      v.playLoadAnimation(
         new LoadPassengerAnimationData(passengerDestination, () => {
           if (idx === viewList.length - 1) {
             this._elevatorData.needSorting = false;
