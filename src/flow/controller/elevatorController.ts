@@ -44,7 +44,10 @@ export class ElevatorController extends Controller {
       return;
     }
 
-    if (this._elevatorData.arrivalOrder.length === 0) {
+    if (
+      this._elevatorData.arrivalOrder.length === 0 &&
+      !this._elevatorData.lockedOrder
+    ) {
       return;
     }
 

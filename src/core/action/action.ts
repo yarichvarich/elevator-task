@@ -33,13 +33,13 @@ export abstract class Action {
   public async resolve() {
     this.state = ActionStates.pending;
 
-    Promise.resolve();
-
-    if (this._onSuccess) {
-      queueMicrotask(() => {
-        this.invokeOnSuccess();
-      });
-    }
+    Promise.resolve().then(() => {
+      if (this._onSuccess) {
+        {
+          this.invokeOnSuccess();
+        }
+      }
+    });
   }
 
   protected invokeOnSuccess(): void {
